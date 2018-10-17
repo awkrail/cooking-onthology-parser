@@ -70,8 +70,3 @@ class CookingOnthologyParser:
       if not leaf in parsed_attributes_dict[root][intermediate]:
         parsed_attributes_dict[root][intermediate].append(leaf)
     return parsed_attributes_dict
-
-
-if __name__ == "__main__":
-  cooking_ontology_parser = CookingOnthologyParser()
-  import ipdb; ipdb.set_trace()
