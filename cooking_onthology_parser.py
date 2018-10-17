@@ -16,8 +16,38 @@ class CookingOnthologyParser:
   
 
   def parse_synonym(self, synonym):
-    pass
-  
+    synonym_tsv = pd.read_csv(synonym, delimiter="\t", header=None)
+    categories = synonym_tsv.loc[:, 0]
+    names = synonym_tsv.loc[:, 1]
+    synonyms = synonym_tsv.loc[:, 2]
+    parsed_synonym_dict = {}
+
+    for category, name, synonym in zip(categories, names, synonyms):
+      if len(category.split("-")) == 2:
+        # WATCH : 材料のところは2つに分かれる
+        tag, tag_category = category.split("-")
+        if not tag in parsed_synonym_dict:
+          parsed_synonym_dict[tag] = {}
+        
+        if not tag_category in parsed_synonym_dict[tag]:
+          parsed_synonym_dict[tag][tag_category] = {}
+        
+        if not name in parsed_synonym_dict[tag][tag_category]:
+          parsed_synonym_dict[tag][tag_category][name] = []
+        
+        if not synonym in parsed_synonym_dict[tag][tag_category][name]:
+          parsed_synonym_dict[tag][tag_category][name].append(synonym)
+      else:
+        if not category in parsed_synonym_dict:
+          parsed_synonym_dict[category] = {}
+        
+        if not name in parsed_synonym_dict[category]:
+          parsed_synonym_dict[category][name] = []
+        
+        if not synonym in parsed_synonym_dict[category][name]:
+          parsed_synonym_dict[category][name].append(synonym)
+    return parsed_synonym_dict
+
 
   @staticmethod
   def parse_tsv(tsv_path):
@@ -44,3 +74,4 @@ class CookingOnthologyParser:
 
 if __name__ == "__main__":
   cooking_ontology_parser = CookingOnthologyParser()
+  import ipdb; ipdb.set_trace()
